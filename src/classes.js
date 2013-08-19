@@ -6,3 +6,41 @@
  * To change this template use File | Settings | File Templates.
  */
 
+var Class = function(){
+    var _class = function(){
+        this.init.apply(this, arguments);
+    };
+
+    _class.prototype.init  = function(){};
+
+    // Shortcut to access prototype
+    _class.fn = _class.prototype;
+    // Shortcut to access class
+    _class.fn.parent = _class;
+
+    /** Adding class properties
+     *
+     * @param obj
+     */
+    _class.extend = function(obj){
+        var extended = obj.extended;
+        for(var i in obj){
+            _class[i] = obj[i];
+        }
+        if (extended) extended(_class)
+    };
+
+    /** Adding instance properties
+     *
+     * @param obj
+     */
+    _class.include = function(obj){
+        var included = obj.included;
+        for(var i in obj){
+            _class.fn[i] = obj[i];
+        }
+        if (included) included(_class)
+    };
+
+    return _class;
+};
