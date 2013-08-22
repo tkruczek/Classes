@@ -27,6 +27,17 @@ var Class = function(parent){
     //Shortcut to access parent class
     _class._super = _class.__proto__;
 
+    // Adding a proxy function
+    _class.proxy = function(func){
+        var self = this;
+        return(function(){
+            return func.apply(self, arguments);
+        });
+    }
+
+    // Add the function on instances too
+    _class.fn.proxy = _class.proxy;
+
     /** Adding class properties
      *
      * @param obj
