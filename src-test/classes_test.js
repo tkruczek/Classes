@@ -10,13 +10,13 @@ TestCase('Classes src-test', {
         this.Person = new Class();
     },
 
-    'test class instantiation': function() {
+    'test class instantiation': function () {
         var p = new this.Person();
         assertInstanceOf('should be Person', this.Person, p);
     },
-    'test adding class properties': function() {
+    'test adding class properties': function () {
         this.Person.extend({
-           a: 'property a'
+            a: 'property a'
         });
         assertNotUndefined(this.Person.a);
 
@@ -25,7 +25,7 @@ TestCase('Classes src-test', {
         assertUndefined(p.a);
     },
 
-    'test adding instance properties': function() {
+    'test adding instance properties': function () {
         this.Person.include({
             b: 'instance property'
         });
@@ -39,5 +39,23 @@ TestCase('Classes src-test', {
         assertNotUndefined(p.b);
         assertNotEquals(p.b, s.b);
 
+    },
+    'test init should be called': function () {
+        this.Person.include({
+            init: sinon.spy()
+        });
+        var p = new this.Person();
+
+        assertTrue(p.init.called);
+    },
+    'test inheritance': function () {
+        this.Person.include({
+            a: 1
+        });
+
+        var Worker = new Class(this.Person),
+            w = new Worker();
+
+        assertEquals('should be equal', 1, w.a);
     }
 });
