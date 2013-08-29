@@ -57,5 +57,56 @@ TestCase('Classes src-test', {
             w = new Worker();
 
         assertEquals('should be equal', 1, w.a);
+    },
+    'test extended should be called': function () {
+        var o = {extended: sinon.spy()};
+        this.Person.extend(o);
+
+        assertTrue(this.Person.extended.called);
+    },
+    'test included should be called': function () {
+        var o = {included: sinon.spy()};
+        this.Person.include(o);
+        assertTrue(o.included.called);
+    },
+
+    'test extended should be called with class': function () {
+        var o = {extended: sinon.spy()};
+        this.Person.extend(o);
+        assertTrue(o.extended.calledWith(this.Person));
+    },
+    'test included should be called with class': function () {
+        var o = {included: sinon.spy()};
+        this.Person.include(o);
+        assertTrue(o.included.calledWith(this.Person));
+    }
+});
+TestCase('test proxy', {
+    setUp: function () {
+        this.Person = new Class();
+    },
+    'test should call onClick in context of element': function () {
+        this.Person.extend({
+            onClick: sinon.spy(),
+            init: function () {
+                this.element = {};
+                this.element.onClick = this.onClick;
+            }
+        });
+        this.Person.init();
+        this.Person.element.onClick();
+        assertTrue(this.Person.onClick.calledOn(this.Person.element));
+    },
+    'test should bind context': function () {
+        this.Person.extend({
+            onClick: sinon.spy(),
+            init: function () {
+                this.element = {};
+                this.element.onClick = this.proxy(this.onClick);
+            }
+        });
+        this.Person.init();
+        this.Person.element.onClick();
+        assertTrue(this.Person.onClick.calledOn(this.Person));
     }
 });
